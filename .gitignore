@@ -1,0 +1,31 @@
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 配置文件
+.env
+.env.local
+.env.*.local
+
+# 对话数据
+conversations.json
+
+# 日志文件
+*.log
+
+# Python缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 操作系统
+.DS_Store
+Thumbs.db
