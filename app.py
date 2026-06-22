@@ -458,11 +458,14 @@ def main():
             results = search_messages(search_query)
             if results:
                 st.write(f"找到 {len(results)} 条结果")
-                for r in results[:5]:
+                for idx, r in enumerate(results[:5]):
                     with st.expander(f"{r['title']}"):
                         st.write(f"**{r['role']}**: {r['content'][:100]}...")
-                        if st.button("跳转", key=f"jump_{r['conversation_id']}"):
-                            select_conversation({"id": r["conversation_id"], "messages": []})
+                        if st.button("跳转", key=f"jump_{r['conversation_id']}_{idx}"):
+                            # 从会话中查找完整对话
+                            target_conv = next((c for c in st.session_state.conversations if c["id"] == r["conversation_id"]), None)
+                            if target_conv:
+                                select_conversation(target_conv)
                             st.rerun()
             else:
                 st.write("未找到匹配结果")
