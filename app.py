@@ -82,6 +82,9 @@ def init_session_state():
     
     if "custom_prompt" not in st.session_state:
         st.session_state.custom_prompt = ""
+    
+    if "show_avatar" not in st.session_state:
+        st.session_state.show_avatar = True
 
 def generate_title(messages, max_len=30):
     """根据对话内容生成标题"""
@@ -219,32 +222,196 @@ def main():
     st.markdown(f"""
     <style>
     .stApp {{
-        background-color: {'#1a1a1a' if is_dark else '#ffffff'};
+        background-color: {'#0f0f0f' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
     }}
     .chat-container {{
         max-width: 800px;
         margin: 0 auto;
     }}
     .user-msg {{
-        background-color: {'#3b82f6' if is_dark else '#007bff'};
-        color: white;
-        border-radius: 12px;
-        padding: 10px 15px;
-        margin: 8px 0;
+        background-color: {'#1e40af' if is_dark else '#007bff'};
+        color: #ffffff;
+        border-radius: 16px;
+        padding: 12px 16px;
+        margin: 10px 0;
         max-width: 70%;
         margin-left: auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        font-size: 15px;
+        line-height: 1.6;
     }}
     .assistant-msg {{
-        background-color: {'#374151' if is_dark else '#f0f0f0'};
-        color: {'#e5e7eb' if is_dark else '#333333'};
-        border-radius: 12px;
-        padding: 10px 15px;
-        margin: 8px 0;
+        background-color: {'#1f2937' if is_dark else '#f1f5f9'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
+        border-radius: 16px;
+        padding: 12px 16px;
+        margin: 10px 0;
         max-width: 70%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        font-size: 15px;
+        line-height: 1.6;
     }}
     .msg-avatar {{
         font-size: 24px;
         margin-right: 8px;
+    }}
+    .stButton > button {{
+        background-color: {'#374151' if is_dark else '#f0f2f6'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
+        border: 1px solid {'#4b5563' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 14px;
+        transition: all 0.2s;
+    }}
+    .stButton > button:hover {{
+        background-color: {'#4b5563' if is_dark else '#e5e7eb'};
+    }}
+    .stButton > button:active {{
+        background-color: {'#6b7280' if is_dark else '#d1d5db'};
+    }}
+    .stTextInput > div > div > input {{
+        background-color: {'#1f2937' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
+        border: 1px solid {'#374151' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+    }}
+    .stTextArea > div > div > textarea {{
+        background-color: {'#1f2937' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
+        border: 1px solid {'#374151' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+    }}
+    .stSelectbox > div > div > select {{
+        background-color: {'#1f2937' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
+        border: 1px solid {'#374151' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+    }}
+    [data-testid="stSidebar"] {{
+        background-color: {'#1a1a2e' if is_dark else '#f8fafc'};
+        padding: 16px 0;
+    }}
+    [data-testid="stSidebar"] .css-1d391kg {{
+        background-color: {'#1a1a2e' if is_dark else '#f8fafc'};
+    }}
+    [data-testid="stSidebar"] * {{
+        color: {'#f0f0f0' if is_dark else '#1f2937'} !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }}
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3, 
+    [data-testid="stSidebar"] h4 {{
+        color: {'#ffffff' if is_dark else '#111827'} !important;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }}
+    [data-testid="stSidebar"] .stTextInput > div > div > input,
+    [data-testid="stSidebar"] .stTextArea > div > div > textarea,
+    [data-testid="stSidebar"] .stSelectbox > div > div > select,
+    [data-testid="stSidebar"] .stSelectbox > div > div > div > div {{
+        background-color: {'#252542' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'} !important;
+        border: 1px solid {'#3a3a5c' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+    }}
+    [data-testid="stSidebar"] .stSelectbox > div > div > div > div > div > div {{
+        background-color: {'#252542' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'} !important;
+    }}
+    [data-testid="stSidebar"] .stSelectbox > div > div > div > div > div > div:hover {{
+        background-color: {'#3a3a5c' if is_dark else '#f0f2f6'} !important;
+    }}
+    [data-testid="stSidebar"] .stSelectbox > div > div > div > svg {{
+        color: {'#8888aa' if is_dark else '#6b7280'} !important;
+    }}
+    [data-testid="stSidebar"] .stSelectbox > div {{
+        background-color: transparent !important;
+    }}
+    [data-testid="stSidebar"] .stSelectbox > div > div {{
+        background-color: transparent !important;
+    }}
+    [data-testid="stSidebar"] .stSelectbox > div > div > label {{
+        color: {'#f0f0f0' if is_dark else '#1f2937'} !important;
+        font-weight: 400 !important;
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+        display: block !important;
+    }}
+    [data-testid="stSidebar"] .stTextInput > div > div > label,
+    [data-testid="stSidebar"] .stTextArea > div > div > label {{
+        color: {'#f0f0f0' if is_dark else '#1f2937'} !important;
+        font-weight: 400 !important;
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+        display: block !important;
+    }}
+    [data-testid="stSidebar"] .stButton > button {{
+        background-color: {'#2d2d5a' if is_dark else '#f0f2f6'};
+        color: {'#ffffff' if is_dark else '#1f2937'} !important;
+        border: 1px solid {'#3a3a5c' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+    }}
+    [data-testid="stSidebar"] .stButton > button:hover {{
+        background-color: {'#3a3a5c' if is_dark else '#e5e7eb'};
+    }}
+    [data-testid="stSidebar"] .stToggle > div > div {{
+        background-color: {'#252542' if is_dark else '#e5e7eb'};
+    }}
+    [data-testid="stSidebar"] .stToggle > div > div > div {{
+        background-color: {'#4f46e5' if is_dark else '#007bff'};
+    }}
+    [data-testid="stSidebar"] .stSlider > div > div > div > div {{
+        background-color: {'#252542' if is_dark else '#e5e7eb'};
+    }}
+    [data-testid="stSidebar"] .stSlider > div > div > div > div > div {{
+        background-color: {'#4f46e5' if is_dark else '#007bff'};
+    }}
+    [data-testid="stSidebar"] .st-expander {{
+        background-color: {'#252542' if is_dark else '#ffffff'};
+        border: 1px solid {'#3a3a5c' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+    }}
+    [data-testid="stSidebar"] .css-16txtl3 {{
+        border-bottom: 1px solid {'#252542' if is_dark else '#e5e7eb'};
+    }}
+    .stSlider > div > div > div > div {{
+        background-color: {'#374151' if is_dark else '#e5e7eb'};
+    }}
+    .stSlider > div > div > div > div > div {{
+        background-color: {'#3b82f6' if is_dark else '#007bff'};
+    }}
+    .st-expander {{
+        background-color: {'#1f2937' if is_dark else '#ffffff'};
+        border: 1px solid {'#374151' if is_dark else '#e5e7eb'};
+        border-radius: 8px;
+    }}
+    .st-expander * {{
+        color: {'#ffffff' if is_dark else '#1f2937'} !important;
+    }}
+    h1, h2, h3, h4, h5, h6, p, span, div, label {{
+        color: {'#ffffff' if is_dark else '#1f2937'} !important;
+    }}
+    .stChatInput > div > div > input {{
+        background-color: {'#1f2937' if is_dark else '#ffffff'};
+        color: {'#ffffff' if is_dark else '#1f2937'};
+        border: 1px solid {'#374151' if is_dark else '#e5e7eb'};
+    }}
+    .stSelectbox > div > div > div > div {{
+        background-color: {'#1f2937' if is_dark else '#ffffff'};
+    }}
+    .stSelectbox > div > div > div > div > div {{
+        color: {'#ffffff' if is_dark else '#1f2937'};
+    }}
+    .stToggle > div > div {{
+        background-color: {'#1f2937' if is_dark else '#e5e7eb'};
+    }}
+    .stToggle > div > div > div {{
+        background-color: {'#3b82f6' if is_dark else '#007bff'};
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -278,6 +445,9 @@ def main():
         if dark_mode != is_dark:
             st.session_state.dark_mode = dark_mode
             st.rerun()
+        
+        # 头像显示设置
+        st.session_state.show_avatar = st.toggle("显示头像", value=st.session_state.show_avatar)
         
         st.divider()
         
@@ -334,19 +504,21 @@ def main():
                 # 显示消息
                 for msg in st.session_state.messages:
                     if msg["role"] == "user":
+                        avatar_html = '<span class="msg-avatar">👤</span>' if st.session_state.show_avatar else ''
                         st.markdown(f"""
                         <div class="chat-container">
                             <div class="user-msg">
-                                <span class="msg-avatar">👤</span>
+                                {avatar_html}
                                 {msg['content']}
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                     else:
+                        avatar_html = '<span class="msg-avatar">🤖</span>' if st.session_state.show_avatar else ''
                         st.markdown(f"""
                         <div class="chat-container">
                             <div class="assistant-msg">
-                                <span class="msg-avatar">🤖</span>
+                                {avatar_html}
                                 {msg['content']}
                             </div>
                         </div>
@@ -364,10 +536,11 @@ def main():
                 
                 # 显示用户消息
                 with chat_container:
+                    avatar_html = '<span class="msg-avatar">👤</span>' if st.session_state.show_avatar else ''
                     st.markdown(f"""
                     <div class="chat-container">
                         <div class="user-msg">
-                            <span class="msg-avatar">👤</span>
+                            {avatar_html}
                             {user_input}
                         </div>
                     </div>
@@ -378,12 +551,13 @@ def main():
                     try:
                         response_text = ""
                         message_placeholder = st.empty()
+                        avatar_html = '<span class="msg-avatar">🤖</span>' if st.session_state.show_avatar else ''
                         for chunk in call_llm_api(st.session_state.messages):
                             response_text += chunk
                             message_placeholder.markdown(f"""
                             <div class="chat-container">
                                 <div class="assistant-msg">
-                                    <span class="msg-avatar">🤖</span>
+                                    {avatar_html}
                                     {response_text}
                                 </div>
                             </div>
